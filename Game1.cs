@@ -14,14 +14,13 @@ namespace MonoGame_1._5_Summative_Animation
         Texture2D redCarTexture, copCarTexture;
         Rectangle redCarRect, copCarRect;
         KeyboardState KeyboardState;
-        KeyboardState State;
         Screen screen;
-        float seconds, startTime;
+        float seconds,startTime;
         Texture2D introTexture,intro2Texture,OutroTexture;
         Rectangle introRect,intro2Rect,OutroRect;
         SpriteFont font,raceFont,timerFont,outroFont;
         Vector2 copSpeed, redSpeed;
-        SoundEffect policeSiren,raceCar;
+        SoundEffect policeSiren,raceCar,introMusic;
         enum Screen
         {
             Intro,
@@ -68,6 +67,7 @@ namespace MonoGame_1._5_Summative_Animation
             outroFont = Content.Load<SpriteFont>("outroFont");
             policeSiren = Content.Load<SoundEffect>("policeSiren");
             raceCar= Content.Load<SoundEffect>("raceCar");
+            introMusic = Content.Load<SoundEffect>("introMusic");
 
 
             // TODO: use this.Content to load your game content here 
@@ -81,11 +81,14 @@ namespace MonoGame_1._5_Summative_Animation
             KeyboardState = Keyboard.GetState();
             if (screen == Screen.Intro)
             {
+                introMusic.Play();
                 if (KeyboardState.IsKeyDown(Keys.Enter))
                 {
+                    //Intro music wont work 
                     screen = Screen.Race;
                     policeSiren.Play();
                     raceCar.Play();
+                    
                 }
             }
             else if (screen == Screen.Race)
@@ -95,7 +98,11 @@ namespace MonoGame_1._5_Summative_Animation
                 {
                     screen=Screen.Outro;
                     policeSiren.Dispose();
-                    raceCar.Dispose();  
+                    raceCar.Dispose();
+                    //if (KeyboardState.IsKeyDown(Keys.Space)) 
+                    //{
+                    //    Exit();
+                    //}
                 }
                
                 copCarRect.X += (int)copSpeed.X;
@@ -115,12 +122,15 @@ namespace MonoGame_1._5_Summative_Animation
             _spriteBatch.Begin();
             if (screen == Screen.Intro)
             {
+                
                 _spriteBatch.Draw(introTexture, introRect, Color.White);
                 _spriteBatch.DrawString(font, "The Great Escape", new Vector2(225, 30), Color.White);
                 _spriteBatch.DrawString(raceFont, "Click enter to begin ", new Vector2(300, 70), Color.White);
+                
             }
             else if (screen == Screen.Race)
             {
+            
                 _spriteBatch.Draw(intro2Texture, intro2Rect, Color.White);
                 _spriteBatch.Draw(redCarTexture, redCarRect, Color.White);
                 _spriteBatch.Draw(copCarTexture, copCarRect, Color.White);

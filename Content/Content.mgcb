@@ -56,6 +56,12 @@
 /processorParam:TextureFormat=Color
 /build:Intro2.jpg
 
+#begin introMusic.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:introMusic.mp3
+
 #begin Outro.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
