@@ -21,6 +21,8 @@ namespace MonoGame_1._5_Summative_Animation
         SpriteFont font,raceFont,timerFont,outroFont;
         Vector2 copSpeed, redSpeed;
         SoundEffect policeSiren,raceCar,introMusic;
+
+        bool musicPlaying;
         enum Screen
         {
             Intro,
@@ -37,6 +39,7 @@ namespace MonoGame_1._5_Summative_Animation
 
         protected override void Initialize()
         {
+            musicPlaying = false;
             // TODO: Add your initialization logic here
             screen = Screen.Intro;
             this.Window.Title = "MonoGame Pt1-5";
@@ -75,20 +78,25 @@ namespace MonoGame_1._5_Summative_Animation
 
         protected override void Update(GameTime gameTime)
         {
+            KeyboardState = Keyboard.GetState();
             seconds = (float)gameTime.TotalGameTime.TotalSeconds - startTime;
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            KeyboardState = Keyboard.GetState();
+
             if (screen == Screen.Intro)
             {
-                introMusic.Play();
+                if (musicPlaying == false) 
+                {
+                    introMusic.Play();
+                    musicPlaying = true;
+                }
                 if (KeyboardState.IsKeyDown(Keys.Enter))
                 {
-                    //Intro music wont work 
+                    
                     screen = Screen.Race;
                     policeSiren.Play();
                     raceCar.Play();
-                    
                 }
             }
             else if (screen == Screen.Race)
@@ -96,17 +104,23 @@ namespace MonoGame_1._5_Summative_Animation
                 redCarRect.X += (int)redSpeed.X;
                 if (redCarRect.X > _graphics.PreferredBackBufferWidth)
                 {
+                  
                     screen=Screen.Outro;
                     policeSiren.Dispose();
                     raceCar.Dispose();
-                    //if (KeyboardState.IsKeyDown(Keys.Space)) 
-                    //{
-                    //    Exit();
-                    //}
+                    
+                   
                 }
-               
+             
                 copCarRect.X += (int)copSpeed.X;
                 base.Update(gameTime);
+            }
+            else if(screen == Screen.Outro)
+            {
+                if (seconds >= 15)
+                {
+                    Exit();
+                }
             }
             
         }
@@ -134,13 +148,14 @@ namespace MonoGame_1._5_Summative_Animation
                 _spriteBatch.Draw(intro2Texture, intro2Rect, Color.White);
                 _spriteBatch.Draw(redCarTexture, redCarRect, Color.White);
                 _spriteBatch.Draw(copCarTexture, copCarRect, Color.White);
-                _spriteBatch.DrawString(timerFont, (0 + seconds).ToString("00:00"), new Vector2(270, 100), Color.Black);
+                _spriteBatch.DrawString(timerFont, (0 + seconds).ToString("00:00"), new Vector2(100, 100), Color.Black);
 
             }
             else if(screen == Screen.Outro) 
             {
                 _spriteBatch.Draw(OutroTexture,OutroRect, Color.White);
                 _spriteBatch.DrawString(outroFont, "You've escaped your ticket! ", new Vector2(300, 70), Color.Black);
+                _spriteBatch.DrawString(timerFont, (0 + seconds).ToString("00:00"), new Vector2(100, 100), Color.Black);
             }
 
             _spriteBatch.End();
